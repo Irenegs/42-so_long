@@ -24,14 +24,14 @@ NAME        := tutorial
 INCS        := include    \
     libft/include
 
-SRCS        := tutorial.c
+SRCS        := prueba_validation.c validation.c
 
 OBJS        := $(SRCS:%.c=%.o)
 
 CC          := gcc -fsanitize=address -g3
 CFLAGS      := -Wall -Wextra -Werror
 
-MLX := mlx_linux/mlx_linux.a
+MLX := mlx/libmlx.a
 #------------------------------------------------#
 #   UTENSILS                                     #
 #------------------------------------------------#
@@ -57,13 +57,13 @@ MAKEFLAGS   += --no-print-directory
 all: $(NAME)
 
 $(NAME): $(MLX) $(OBJS)
-	$(CC) $(OBJS) -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
+	$(CC) $(OBJS) -Lmlx -lmlx -L/usr/lib -Imlx -lXext -lX11 -lm -lz -o $(NAME)
 
 $(MLX):
 	$(MAKE) -C $(@D)
 
 %.o: %.c
-	$(CC) -Wall -Wextra -Werror -I/usr/include -Imlx_linux -O3 -c $< -o $@
+	$(CC) -Wall -Wextra -Werror -I/usr/include -Imlx -O3 -c $< -o $@
     
 -include $(DEPS)
 

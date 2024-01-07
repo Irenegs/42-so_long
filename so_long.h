@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 18:17:10 by irgonzal          #+#    #+#             */
-/*   Updated: 2023/09/27 19:32:08 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/07 12:47:28 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #ifndef SOLONG_H
 # define SOLONG_H
 //# include "libft/libft.h"
-# include <mlx.h>
+# include "mlx/mlx.h"
 # include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -27,17 +27,6 @@ typedef struct s_cell
     int reach;
 }   t_cell;
 
-typedef struct s_map
-{
-	int	width;
-	int height;
-    char *content;
-    int objects;
-    int position;
-    int exit;
-    t_cell *cells;
-}	t_map;
-
 typedef struct	s_mapinfo {
 	int cells;
     int columns;
@@ -45,7 +34,15 @@ typedef struct	s_mapinfo {
     int exit;
     int collectables;
     int position;
+    int num_char;
 }				t_mapinfo;
 
-int check_map(char *file, t_mapinfo *map_info);
+typedef struct s_map
+{
+	char *content;
+    t_mapinfo info;
+    t_cell cells;
+}	t_map;
+
+t_map *get_map(char *file);
 #endif

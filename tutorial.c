@@ -1,4 +1,4 @@
-# include "mlx_linux/mlx.h"
+# include "mlx/mlx.h"
 # include <stdio.h>
 # include <stdlib.h>
 
@@ -81,7 +81,7 @@ int	key_pressed(int keycode, t_vars *vars)
 int	destroy(t_vars *vars)
 {
     mlx_destroy_window(vars->mlx, vars->win);
-	exit (0);
+	exit(0);
 }
 
 
@@ -91,16 +91,17 @@ int	main(void)
 	void *img;
 	int dim;
 
-	img = NULL;
+	//img = NULL;
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, 500, 500, "So long...");
-	img = mlx_xpm_file_to_image(vars.mlx, "grass.xpm", &dim, &dim);
+	img = mlx_xpm_file_to_image(vars.mlx, "Images/Grass.xpm", &dim, &dim);
 	mlx_put_image_to_window(vars.mlx, vars.win, img, 20, 100);
 	mlx_put_image_to_window(vars.mlx, vars.win, img, 40, 100);
+	free(img);
 	mlx_hook(vars.win, 2, 1L<<0, key_pressed, &vars);
 	mlx_hook(vars.win, 17, 1L<<0, destroy, &vars);
-	free(img);
 	mlx_loop(vars.mlx);
+	exit(0);
 }
 
 //https://cupnooble.itch.io/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 17:58:51 by irgonzal          #+#    #+#             */
-/*   Updated: 2023/09/27 20:02:53 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/07 13:20:26 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,13 @@ void initialize_map(t_mapinfo *map_info)
     map_info->exit = 0;
     map_info->position = 0;
     map_info->collectables = 0;
+    map_info->num_char = 0;
 }
 
 int check_rectangle(int cells, int collumns)
 {
     if (collumns != 0)
-        return ((cells + 1)% collumns != 0);
+        return (cells % collumns != 0);
     return (1);
 }
 
@@ -65,7 +66,7 @@ int valid_char(char c)
     return (1);
 }
 
-int check_map(char *file, t_mapinfo *map_info)//caracteres especiales y rectangulo
+int get_map_info(char *file, t_mapinfo *map_info)//caracteres especiales y rectangulo
 {
     int fd;
     char buf;
@@ -73,21 +74,21 @@ int check_map(char *file, t_mapinfo *map_info)//caracteres especiales y rectangu
     fd = open(file, O_RDONLY);
     if (fd == -1)
         exit(1);
-    printf("fd: %d\n", fd);
     initialize_map(map_info);
     //printf("cells %d\n", map_info->cells);
     while (read(fd, &buf, 1) > 0)
     {
-        map_info->cells++;
-        //printf("cells %d\n", map_info->cells);
+        map_info->num_char++;
+        if (buf != '\n')
+            map_info->cells++;
         if (buf == '\n' && map_info->columns == 0)
-            map_info->columns = map_info->cells + 1;
+            map_info->columns = map_info->cells;
         else if (buf == '\n' || buf == '\0')
         {
             if (check_rectangle(map_info->cells, map_info->columns) != 0)
             {
                 close(fd);
-                return (1);
+                return (2);
             }
         }
         else if (buf == 'C'|| buf == 'P' || buf == 'E')
@@ -95,23 +96,76 @@ int check_map(char *file, t_mapinfo *map_info)//caracteres especiales y rectangu
             if (set_special_info(buf, map_info) == 1)
             {
                 close(fd);
-                return (1);
+                return (3);
             }
         }
         else if (valid_char(buf) != 0)
         {
             close(fd);
-            return (1);
+            return (4);
         }
     }
+    if (buf != '\n')
+        map_info->num_char++;
     if (map_info->columns != 0)
         map_info->lines = map_info->cells / map_info->columns;
-    printf("MAP INFO:\ncells %d\ncolumns %d\nlines %d\nexit %d\nposition %d\ncollectables %d\n", map_info->cells, map_info->columns, map_info->lines, map_info->exit, map_info->position, map_info->collectables);
     close(fd);
     return (0);
 }
 
 
+int get_map_content(char *file, t_map *map)
+{
+    int fd;
+
+    fd = open(file, O_RDONLY);
+    if (fd == -1)
+        return (1);
+    (*map).content = malloc((*map).info.num_char * sizeof(char));
+    if (read(fd, (*map).content, (*map).info.num_char - 1) != (*map).info.num_char - 1)
+        return (2);
+    (*map).content[(*map).info.num_char - 1] = '\0';
+    return (0);
+}
+
+int check_map(t_map *map)
+{
+    if (!map)
+        return (1);
+    //check #C>0, #E!= 0, #P != 0
+    //check borders
+    //check solution
+    return (0);
+}
+
+t_map *get_map(char *file)
+{
+    t_map  *map;
+
+    map = malloc(1 * sizeof(t_map));
+    if (get_map_info(file, &(*map).info) != 0)
+    {
+        free(map);
+        printf("Info\n");
+        return (NULL);
+    }
+    if (get_map_content(file, map) != 0)
+    {
+        free(map);
+        printf("Content\n");
+        return (NULL);
+    }
+    if (check_map(map) != 0)
+    {
+        free(map->content);
+        free(map);
+        printf("Check\n");
+        return (NULL);
+    }
+    printf("Mapa: %s", map->content);
+    free(map->content);
+    return (map);
+}
 
 /*
 t_map *create_valid_map(char *s)
@@ -127,46 +181,9 @@ t_map *create_valid_map(char *s)
     while (s[i] != '\0' && map->width == 0)
     {
         if (s[i] == '1')
-            
-        i++;
+            i++;
     }
     check_low_border(s, i , map->width);
 }
 
-int check_map(char *input)
-{
-    t_map *map;
-
-    map = create_valid_map(input);
-    
-    //crear estructura    
-    //rectangular
-    //bordeado por muros
-    //una salida, una entrada y al menos un objeto
-    //camino válido
-}
-*/
-/*
-
-
-int is_rectangular(t_map *map)
-{
-    int i;
-
-    i = 0;
-    while (map->content[i] != '\0')
-    {
-        if (map->content[i] == '\n' &&  (i + 1) % map->width != 0)
-            return (1);
-        i++;
-    }
-    if ((i + 1) % map->width != 0)
-        return (1);
-    return (0);
-}
-
-int border_check(t_map *map)
-{
-    if (upper_border())
-}
 */
