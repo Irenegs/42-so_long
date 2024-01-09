@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 17:58:51 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/07 13:20:26 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/07 19:20:43 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "so_long.h"
 
-
-void initialize_map(t_mapinfo *map_info)
+static void initialize_map(t_mapinfo *map_info)
 {
     map_info->cells = 0;
     map_info->columns = 0;
@@ -24,14 +23,14 @@ void initialize_map(t_mapinfo *map_info)
     map_info->num_char = 0;
 }
 
-int check_rectangle(int cells, int collumns)
+static int check_rectangle(int cells, int collumns)
 {
     if (collumns != 0)
         return (cells % collumns != 0);
     return (1);
 }
 
-int set_special_info(const char buf, t_mapinfo *map_info)
+static int set_special_info(const char buf, t_mapinfo *map_info)
 {
     if (buf == 'C')
         map_info->collectables++;
@@ -52,7 +51,7 @@ int set_special_info(const char buf, t_mapinfo *map_info)
     return (0);
 }
 
-int valid_char(char c)
+static int valid_char(char c)
 {
     char    *valid_chars;
     
@@ -66,7 +65,7 @@ int valid_char(char c)
     return (1);
 }
 
-int get_map_info(char *file, t_mapinfo *map_info)//caracteres especiales y rectangulo
+static int get_map_info(char *file, t_mapinfo *map_info)
 {
     int fd;
     char buf;
@@ -75,7 +74,6 @@ int get_map_info(char *file, t_mapinfo *map_info)//caracteres especiales y recta
     if (fd == -1)
         exit(1);
     initialize_map(map_info);
-    //printf("cells %d\n", map_info->cells);
     while (read(fd, &buf, 1) > 0)
     {
         map_info->num_char++;
@@ -113,8 +111,7 @@ int get_map_info(char *file, t_mapinfo *map_info)//caracteres especiales y recta
     return (0);
 }
 
-
-int get_map_content(char *file, t_map *map)
+static int get_map_content(char *file, t_map *map)
 {
     int fd;
 
@@ -128,7 +125,7 @@ int get_map_content(char *file, t_map *map)
     return (0);
 }
 
-int check_map(t_map *map)
+static int check_map(t_map *map)
 {
     if (!map)
         return (1);
@@ -142,6 +139,7 @@ t_map *get_map(char *file)
 {
     t_map  *map;
 
+    printf("Get map\n");
     map = malloc(1 * sizeof(t_map));
     if (get_map_info(file, &(*map).info) != 0)
     {
@@ -162,28 +160,6 @@ t_map *get_map(char *file)
         printf("Check\n");
         return (NULL);
     }
-    printf("Mapa: %s", map->content);
-    free(map->content);
+    printf("OK\n");
     return (map);
 }
-
-/*
-t_map *create_valid_map(char *s)
-{
-    int i;
-    t_map *map;
-
-    i = 0;
-    map = malloc(sizeof(t_map));
-    if (!map)
-        return (NULL);
-    map->width = 0;
-    while (s[i] != '\0' && map->width == 0)
-    {
-        if (s[i] == '1')
-            i++;
-    }
-    check_low_border(s, i , map->width);
-}
-
-*/
