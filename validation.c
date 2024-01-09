@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 17:58:51 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/07 19:20:43 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/09 20:24:43 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ static void initialize_map(t_mapinfo *map_info)
     map_info->cells = 0;
     map_info->columns = 0;
     map_info->lines = 0;
-    map_info->exit = 0;
-    map_info->position = 0;
+    map_info->exit = -1;
+    map_info->position = -1;
     map_info->collectables = 0;
     map_info->num_char = 0;
 }
@@ -36,14 +36,14 @@ static int set_special_info(const char buf, t_mapinfo *map_info)
         map_info->collectables++;
     else if (buf == 'E')
     {
-        if (map_info->exit == 0)
+        if (map_info->exit == -1)
             map_info->exit = map_info->cells;
         else
             return (1);
     }
     else if (buf == 'P')
     {
-        if (map_info->position == 0)
+        if (map_info->position == -1)
             map_info->position = map_info->cells;
         else
             return (1);
@@ -91,7 +91,7 @@ static int get_map_info(char *file, t_mapinfo *map_info)
         }
         else if (buf == 'C'|| buf == 'P' || buf == 'E')
         {
-            if (set_special_info(buf, map_info) == 1)
+            if (set_special_info(buf, map_info) != 0)
             {
                 close(fd);
                 return (3);
@@ -125,39 +125,106 @@ static int get_map_content(char *file, t_map *map)
     return (0);
 }
 
+static int  check_vertical_borders(t_map *map)
+{
+    int i;
+
+    i = 0;
+    while (map->content && i < map->info.lines)
+    {
+        if (map->content[i * (map->info.columns + 1)] != '1')
+            return (1);
+        if (i != map->info.lines - 1)
+        {
+            if (map->content[(i + 1) * (map->info.columns + 1) - 2] != '1')
+                return (1);
+        }
+        i++;
+    }
+    return (0);
+}
+
+static int  check_horizontal_borders(t_map *map)
+{
+    int i;
+
+    i = 0;
+    while (map->content && i < map->info.columns)
+    {
+        if (map->content[i] != '1' || map->content[map->info.num_char - i - 2] != '1')
+        {
+            return (1);
+        }
+        i++;
+    }
+    return (0);
+}
+
+static int  check_borders(t_map *map)
+{
+    if (check_horizontal_borders(map) == 0)
+    {
+        printf("Horizontal OK\n");
+        if (check_vertical_borders(map) == 0)
+            return (0);
+    }
+    return (1);
+}
+
+static int  check_solution(t_map *map)
+{
+    if (map)
+        return (0);
+    return (1);
+}
+
 static int check_map(t_map *map)
 {
     if (!map)
         return (1);
-    //check #C>0, #E!= 0, #P != 0
-    //check borders
-    //check solution
-    return (0);
+    if (map->info.collectables != 0)
+    {
+        if (map->info.position != -1 && map->info.exit != -1)
+        {
+            printf("info OK\n");
+            if (check_borders(map) == 0)
+            {
+                printf("Borders OK\n");
+                if (check_solution(map) == 0)
+                    return (0);
+            }
+        }
+    }
+    return (1);
 }
 
 t_map *get_map(char *file)
 {
     t_map  *map;
+    int fail;
 
     printf("Get map\n");
     map = malloc(1 * sizeof(t_map));
-    if (get_map_info(file, &(*map).info) != 0)
+    fail = get_map_info(file, &(*map).info);
+    if (fail != 0)
     {
         free(map);
-        printf("Info\n");
+        printf("Info %d\n", fail);
         return (NULL);
     }
-    if (get_map_content(file, map) != 0)
+    fail = get_map_content(file, map);
+    if (fail != 0)
     {
         free(map);
-        printf("Content\n");
+        printf("Content %d\n", fail);
         return (NULL);
     }
-    if (check_map(map) != 0)
+    fail = check_map(map);
+    if (fail != 0)
     {
         free(map->content);
         free(map);
-        printf("Check\n");
+        printf("Check %d\n",fail);
         return (NULL);
     }
     printf("OK\n");

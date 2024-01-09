@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   solong.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/07 18:37:31 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/07 19:59:14 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/09 19:32:37 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,15 @@
 
 int valid_movement(int keycode, t_solong *solong)
 {
+	/*
 	if (inside_map(keycode, solong) != 0)
 		return (1);
 	if (not_in_wall(keycode, solong) != 0)
 		return(1);
-	return (0);
+	return (0);*/
+	if (keycode != 0 && solong)
+		return(0);
+	return (1);
 }
 
 int movement(int keycode, t_solong *solong)
