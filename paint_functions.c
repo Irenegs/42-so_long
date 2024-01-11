@@ -6,7 +6,7 @@
 /*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/07 18:32:15 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/07 19:10:46 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/11 21:27:57 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	paint_map(t_solong *solong)
 		if ((*solong).map->content[i] != '\n')
 		{
 			img = mlx_xpm_file_to_image(solong->graphics->mlx, choose_img((*solong).map->content[i]), &dim, &dim);
-			mlx_put_image_to_window(solong->graphics->mlx, solong->graphics->win, img, 20 * ((i - j) % 3), 20 * j);
+			mlx_put_image_to_window(solong->graphics->mlx, solong->graphics->win, img, 20 * (i % ((*solong).map->info.columns + 1)), 20 * j);
 			free(img);
 		}
 		else
@@ -47,4 +47,20 @@ int	paint_map(t_solong *solong)
 		i++;
 	}
 	return (0);
+}
+
+void paint_change(t_solong *solong, int new_pos)
+{
+	int 	dim;
+	void	*img;
+
+	img = mlx_xpm_file_to_image(solong->graphics->mlx, "Images/Player.xpm", &dim, &dim);
+	mlx_put_image_to_window(solong->graphics->mlx, solong->graphics->win, img, 20 * (new_pos % ((*solong).map->info.columns + 1)), 20 * (new_pos / ((*solong).map->info.columns + 1)));
+	free(img);
+	if (solong->map->info.position == solong->map->info.exit)
+		img = mlx_xpm_file_to_image(solong->graphics->mlx, "Images/Exit.xpm", &dim, &dim);
+	else
+		img = mlx_xpm_file_to_image(solong->graphics->mlx, "Images/Grass.xpm", &dim, &dim);
+	mlx_put_image_to_window(solong->graphics->mlx, solong->graphics->win, img, 20 * (solong->map->info.position % ((*solong).map->info.columns + 1)), 20 * (solong->map->info.position / ((*solong).map->info.columns + 1)));
+	free(img);
 }

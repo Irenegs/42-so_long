@@ -1,7 +1,7 @@
-NAME        := tutorial
+NAME        := so_long
 
 
-SRC        := tutorial.c
+SRC        := main.c movement.c paint_functions.c solong.c validation.c
 
 OBJ        := $(SRC:%.c=%.o)
 
@@ -24,4 +24,20 @@ $(NAME): $(OBJ) $(MLX)
 	$(CC) $(OBJ) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
 
 
+
+
+RM          := rm -f
+
+
+clean:
+	$(RM) $(OBJ)
+
+fclean: clean
+	$(RM) $(NAME)
+
+re:
+	$(MAKE) fclean
+	$(MAKE) all
+
 .PHONY: clean fclean re
+.SILENT:

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 17:58:51 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/09 20:24:43 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/11 19:20:18 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,14 @@ static int set_special_info(const char buf, t_mapinfo *map_info)
     else if (buf == 'E')
     {
         if (map_info->exit == -1)
-            map_info->exit = map_info->cells;
+            map_info->exit = map_info->num_char - 1;
         else
             return (1);
     }
     else if (buf == 'P')
     {
         if (map_info->position == -1)
-            map_info->position = map_info->cells;
+            map_info->position = map_info->num_char - 1;
         else
             return (1);
     }
