@@ -6,7 +6,7 @@
 /*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 17:24:58 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/11 21:34:58 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/14 20:11:45 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,16 @@ static int out_horizontal(int new_pos, t_solong *solong)
 	return (0);
 }
 
-static int	get_pos_change(int keycode, t_solong *solong)
+int	get_pos_change(int keycode, t_map *map)
 {
 	if (keycode == A)
 		return (-1);
 	if (keycode == S)
-		return ((solong->map->info.columns + 1));
+		return ((map->info.columns + 1));
 	if (keycode == D)
 		return (1);
 	if (keycode == W)
-		return (-(solong->map->info.columns + 1));
+		return (-(map->info.columns + 1));
 	return (0);
 }
 
@@ -44,8 +44,7 @@ static int valid_movement(int keycode, t_solong *solong)
 	
 	int new_pos;
 
-	new_pos = solong->map->info.position + get_pos_change(keycode, solong);
-	//printf("VM: %d %d\n%c%c%c\n", solong->map->info.position, new_pos, solong->map->content[new_pos-1], solong->map->content[new_pos], solong->map->content[new_pos+1]);
+	new_pos = solong->map->info.position + get_pos_change(keycode, solong->map);
 	if (new_pos == solong->map->info.position)
 		return (1);
 	if (out_vertical(new_pos, solong) || out_horizontal(new_pos, solong))
@@ -59,12 +58,13 @@ void make_movement(int keycode, t_solong *solong)
 {
 	int new_pos;
 
-	new_pos = solong->map->info.position + get_pos_change(keycode, solong);
+	new_pos = solong->map->info.position + get_pos_change(keycode, solong->map);
 	if (solong->map->content[new_pos] == 'E' && solong->map->info.collectables == 0)
 	{
 		write(1, "You win!\n", 9);
 		paint_change(solong, new_pos);
 		destroy(solong);
+		return ;
 	}
 	if (solong->map->info.position != solong->map->info.exit)
 			solong->map->content[solong->map->info.position] = '0';
@@ -79,7 +79,7 @@ int movement(int keycode, t_solong *solong)
 	if (valid_movement(keycode, solong) == 0)
 	{
 		(*solong).movements++;
-		printf(1, "Movements: %d\n", (*solong).movements);//ft_putnbr_fd?
+		printf("Movements: %d\n", (*solong).movements);//ft_putnbr_fd?
 		make_movement(keycode, solong);
 	}
 	return (0);

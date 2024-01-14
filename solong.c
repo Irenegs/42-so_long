@@ -6,19 +6,23 @@
 /*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/07 18:37:31 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/11 21:33:23 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/14 20:42:20 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "so_long.h"
 
+
+
 int	destroy(t_solong *solong)
 {
-	free(solong->map->content);
-	//free(solong.map.info);//es necesario?
     mlx_destroy_window(solong->graphics->mlx, solong->graphics->win);
+	mlx_destroy(solong->graphics->mlx);
 	free(solong->graphics);
-	exit (0);
+	free(solong->map->content);
+    free(solong->map);
+    free(solong);
+	exit(0);
 }
 int	key_pressed(int keycode, t_solong *solong)
 {
@@ -37,10 +41,17 @@ int	key_pressed(int keycode, t_solong *solong)
 
 void	play(t_solong *solong)
 {
+	int		dim_x;
+	int		dim_y;
+	void	*m;
+
+	dim_x = 20 * solong->map->info.columns;
+	dim_y = 20 * solong->map->info.lines;
 	(*solong).movements = 0;
 	solong->graphics = malloc(1 * sizeof(t_graphic));
 	solong->graphics->mlx = mlx_init();
-	solong->graphics->win = mlx_new_window(solong->graphics->mlx, 1000, 1000, "So long...");
+	m = solong->graphics->mlx;
+	solong->graphics->win = mlx_new_window(m, dim_x, dim_y, "So long...");
 	paint_map(solong);
 	mlx_hook(solong->graphics->win, 17, 1L<<0, destroy, solong);
 	mlx_hook(solong->graphics->win, 2, 1L<<0, key_pressed, solong);
@@ -50,5 +61,4 @@ void	play(t_solong *solong)
 /*
 Idea: pasar un puntero a una estructura con toda la información a las funciones tipo key_pressed de forma que éstas modifiquen las cosas necesarias
 - Escribir el número de movimientos sin utilizar printf
-- Validación del mapa
 */

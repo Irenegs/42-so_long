@@ -189,25 +189,30 @@ static void	get_objects(int *objects, t_map *map)
 	}
 }
 
-static int is_reachable(int cell, char *copy)
+static int is_reachable(int cell, char *copy, t_map *map)
 {
-	int adj;
-
-	if (!copy)//cell  ft_strlen(copy)
+	if (!copy && cell < map->info.num_char)
 		return (1);
+    //printf("Cell %d->%c\n", cell, copy[cell]);
 	if (copy[cell] == '2')
 		return (0);
 	if (copy[cell] == '1')
 		return (1);
-	adj = adjacents_reachable(cell, copy);
-	if (is_reachable(cell+up, copy) == 0)
-	{
+    if (copy[cell] == '3')
+        return (1);
+    copy[cell] = '3';
+    if (is_reachable(cell + get_pos_change(W, map), copy, map) == 0)
 		copy[cell] = '2';
-		return (0);
-	}
-	if (is_reachable(cell+derecha copy) == 0)
-	---
-	copy[cell] = '1';
+	else if (is_reachable(cell + get_pos_change(D, map), copy, map) == 0)
+		copy[cell] = '2';
+    else if (is_reachable(cell + get_pos_change(S, map), copy, map) == 0)
+		copy[cell] = '2';
+    else if (is_reachable(cell + get_pos_change(A, map), copy, map) == 0)
+		copy[cell] = '2';
+    //printf("Exiting %d->%c\n", cell, copy[cell]);    
+    if (copy[cell] == '2')
+        return (0);
+    copy[cell] = '0';
 	return (1);
 }
 
@@ -218,13 +223,14 @@ static int	map_is_solvable(char *map_copy, t_map *map, int *objects)
 	c = 0;
 	if (!map_copy || !map || !objects)
 		return (1);
-	if (is_reachable(map->info.exit, map_copy) == 0)
+	if (is_reachable(map->info.exit, map_copy, map) == 0)
 	{
+        //printf("Exit is reachable\n");
 		while (c < map->info.collectables)
 		{
-			if (is_reachable(objects[c], map_copy) != 0)
+			if (is_reachable(objects[c], map_copy, map) != 0)
 				return (1);
-			c++;
+            c++;
 		}
 	}
 	return (0);
@@ -236,15 +242,18 @@ static int  check_solution(t_map *map)
 	int		*objects;
 	int		solvable;
 
-	if (map)
+    if (!map)
 		return (1);
 	map_copy = ft_strdup(map->content);
-	map_copy[map->info.position] = '2';
+    map_copy[map->info.position] = '2';
 	if (!map_copy)
 		return (1);
-	objects = malloc(map->info.collectables* sizeof(int));
+	objects = malloc(map->info.collectables * sizeof(int));
 	if (!objects)
+    {
+        free(map_copy);
 		return (1);
+    }
 	get_objects(objects, map);
 	solvable = map_is_solvable(map_copy, map, objects);
 	free(map_copy);
@@ -260,10 +269,10 @@ static int check_map(t_map *map)
 	{
 		if (map->info.position != -1 && map->info.exit != -1)
 		{
-			printf("info OK\n");
+			//printf("info OK\n");
 			if (check_borders(map) == 0)
 			{
-				printf("Borders OK\n");
+				//printf("Borders OK\n");
 				if (check_solution(map) == 0)
 					return (0);
 			}
@@ -277,30 +286,29 @@ t_map *get_map(char *file)
 	t_map *map;
 	int fail;
 
-	printf("Get map\n");
+	//printf("Get map\n");
 	map = malloc(1 * sizeof(t_map));
 	fail = get_map_info(file, &(*map).info);
 	if (fail != 0)
 	{
 		free(map);
-		printf("Info %d\n", fail);
+		//printf("Info %d\n", fail);
 		return (NULL);
 	}
 	fail = get_map_content(file, map);
 	if (fail != 0)
 	{
 		free(map);
-		printf("Content %d\n", fail);
+		//printf("Content %d\n", fail);
 		return (NULL);
 	}
 	fail = check_map(map);
 	if (fail != 0)
 	{
-		free(map->content);
 		free(map);
-		printf("Check %d\n",fail);
+		//printf("Check %d\n",fail);
 		return (NULL);
 	}
-	printf("OK\n");
+	//printf("OK\n");
 	return (map);
 }

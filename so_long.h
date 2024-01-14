@@ -6,7 +6,7 @@
 /*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 18:17:10 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/11 21:31:46 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/14 20:39:50 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,8 @@ int     paint_map(t_solong *solong);
 int     movement(int keycode, t_solong *solong);
 int     destroy(t_solong *solong);
 void    paint_change(t_solong *solong, int new_pos);
+int	    get_pos_change(int keycode, t_map *map);
+char	*ft_strdup(char *src);
+
+
 #endif
