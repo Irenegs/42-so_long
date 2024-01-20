@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlxtutorial.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/19 18:56:40 by irgonzal          #+#    #+#             */
-/*   Updated: 2023/09/27 18:35:55 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/19 17:06:46 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ int exit_program(t_vars *vars)
     if (!vars->win)
         exit(0);
     mlx_destroy_window(vars->mlx, vars->win);
+    mlx_destroy_display(vars->mlx);
     exit(0);
 }
 

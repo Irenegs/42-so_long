@@ -1,6 +1,6 @@
 NAME        := so_long
 
-SRC			:= ft_strdup.c main.c map_info.c map_solvable.c movement.c paint_functions.c  \
+SRC			:= char_functions.c libft.c images.c main.c map_info.c map_solvable.c movement.c paint_functions.c  \
 				play.c solong.c valid_structure.c validation.c
 
 OBJ			:= $(SRC:%.c=%.o)

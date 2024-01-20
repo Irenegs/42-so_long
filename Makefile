@@ -1,6 +1,6 @@
 ###########################################
 
-NAME        := tutorial
+NAME        := so_long
 
 #------------------------------------------------#
 #   INGREDIENTS                                  #
@@ -24,12 +24,12 @@ NAME        := tutorial
 INCS        := include    \
     libft/include
 
-SRCS        := prueba_validation.c validation.c
+SRCS        := char_functions.c libft.c images.c main.c map_info.c map_solvable.c movement.c paint_functions.c play.c solong.c valid_structure.c validation.c 
 
 OBJS        := $(SRCS:%.c=%.o)
 
-CC          := gcc -fsanitize=address -g3
-CFLAGS      := -Wall -Wextra -Werror
+CC          := gcc
+CFLAGS      := -Wall -Wextra 
 
 MLX := mlx/libmlx.a
 #------------------------------------------------#
@@ -63,7 +63,7 @@ $(MLX):
 	$(MAKE) -C $(@D)
 
 %.o: %.c
-	$(CC) -Wall -Wextra -Werror -I/usr/include -Imlx -O3 -c $< -o $@
+	$(CC) $(CFLAGS) -I/usr/include -Imlx -O3 -c $< -o $@
     
 -include $(DEPS)
 

@@ -1,25 +1,25 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   movement.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/11 17:24:58 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/16 19:27:59 by irgonzal         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   movement.c										 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: irgonzal <irgonzal@student.42madrid.com	+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/01/11 17:24:58 by irgonzal		  #+#	#+#			 */
+/*   Updated: 2024/01/19 16:49:55 by irgonzal		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
-# include "so_long.h"
+#include "so_long.h"
 
-static int out_vertical(int new_pos, t_solong *solong)
+static int	out_vertical(int new_pos, t_solong *solong)
 {
 	if (new_pos < 0 || new_pos > solong->map->info.cells)
 		return (1);
 	return (0);
 }
 
-static int out_horizontal(int new_pos, t_solong *solong)
+static int	out_horizontal(int new_pos, t_solong *solong)
 {
 	if (new_pos % (solong->map->info.columns + 1) == 0)
 		return (1);
@@ -39,10 +39,9 @@ int	get_pos_change(int keycode, t_map *map)
 	return (0);
 }
 
-static int valid_movement(int keycode, t_solong *solong)
+int	valid_movement(int keycode, t_solong *solong)
 {
-	
-	int new_pos;
+	int	new_pos;
 
 	new_pos = solong->map->info.position + get_pos_change(keycode, solong->map);
 	if (new_pos == solong->map->info.position)
@@ -50,37 +49,28 @@ static int valid_movement(int keycode, t_solong *solong)
 	if (out_vertical(new_pos, solong) || out_horizontal(new_pos, solong))
 		return (1);
 	if (solong->map->content[new_pos] == '1')
-		return(1);
+		return (1);
 	return (0);
 }
 
-void make_movement(int keycode, t_solong *solong)
+void	make_movement(int keycode, t_solong *solong)
 {
-	int new_pos;
+	int	np;
 
-	new_pos = solong->map->info.position + get_pos_change(keycode, solong->map);
-	if (solong->map->content[new_pos] == 'E' && solong->map->info.collectables == 0)
+	np = solong->map->info.position + get_pos_change(keycode, solong->map);
+	if (np == solong->map->info.exit && solong->map->info.collectables == 0)
 	{
 		write(1, "You win!\n", 9);
-		paint_change(solong, new_pos);
 		destroy(solong);
 		return ;
 	}
 	if (solong->map->info.position != solong->map->info.exit)
 		solong->map->content[solong->map->info.position] = '0';
-	if (solong->map->content[new_pos] == 'C')
+	if (solong->map->info.position != solong->map->info.exit)
+		solong->map->content[solong->map->info.exit] = 'E';
+	if (solong->map->content[np] == 'C')
 		solong->map->info.collectables -= 1;
-	paint_change(solong, new_pos);
-	solong->map->info.position = new_pos;
-}
-
-int movement(int keycode, t_solong *solong)
-{
-	if (valid_movement(keycode, solong) == 0)
-	{
-		(*solong).movements++;
-		printf("Movements: %d\n", (*solong).movements);//ft_putnbr_fd?
-		make_movement(keycode, solong);
-	}
-	return (0);
+	paint_change(solong, np);
+	solong->map->info.position = np;
+	solong->map->content[np] = 'P';
 }

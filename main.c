@@ -1,37 +1,47 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/07 19:05:48 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/16 21:08:50 by irgonzal         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   main.c											 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: irgonzal <irgonzal@student.42madrid.com	+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/01/07 19:05:48 by irgonzal		  #+#	#+#			 */
+/*   Updated: 2024/01/20 16:25:05 by irgonzal		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
-# include "so_long.h"
-
-void show_leaks(void)
+#include "so_long.h"
+/*
+void	show_leaks(void)
 {
-    system("leaks so_long");
+	system("leaks so_long");
 }
-
-int main(int argc, char **argv)
+*/
+int	main(int argc, char **argv)
 {
-    int i = 1;
-    t_solong   *solong;
-    
-    atexit(show_leaks);
-    solong = malloc(1 * sizeof(t_solong));
-    printf("main %p\n", solong);
-    while (i < 2 && argc > 1 && solong)
-    {
-        if (init_solong(solong, argv[i]) == 0)
-            play(solong);
-        printf("main again\n");
-	    clean_solong(solong);
-        i++;
-    }
-    exit(0);
+	t_solong	*solong;
+	int			err;
+
+	if (argc != 2)
+		return (1);
+	//atexit(show_leaks);
+	solong = malloc(1 * sizeof(t_solong));
+	if (!solong)
+		exit (1);
+	err = get_map(argv[1], solong);
+	if (err != 0)
+	{
+		clean_solong(solong);
+		return (write_error(err));
+	}
+	play(solong);
+	clean_solong(solong);
+	exit(0);
 }
+/*
+- valgrind- leak mlx_init mapa valido
+- fsanitize: bufferoverflow /BUS
+- norminette .h
+- posibilitar resize?
+- corner maps
+*/

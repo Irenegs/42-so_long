@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   map_info.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 19:45:48 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/16 21:01:58 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/20 19:55:17 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "so_long.h"
+#include "so_long.h"
 
-static void initialize_map(t_mapinfo *map_info)
+static void	initialize_map(t_mapinfo *map_info)
 {
 	map_info->cells = 0;
 	map_info->columns = 0;
@@ -23,7 +23,7 @@ static void initialize_map(t_mapinfo *map_info)
 	map_info->num_char = 0;
 }
 
-static int set_special_info(const char buf, t_mapinfo *map_info)
+static int	set_info(const char buf, t_mapinfo *map_info)
 {
 	if (buf == 'C')
 		map_info->collectables++;
@@ -44,29 +44,10 @@ static int set_special_info(const char buf, t_mapinfo *map_info)
 	return (0);
 }
 
-static int valid_char(char c)
+static int	first_read(int fd, t_map *map)
 {
-	char	*valid_chars;
-	
-	valid_chars = "10CEP";
-	while (*valid_chars)
-	{
-		if (c == *valid_chars)
-			return (0);
-		valid_chars++;
-	}
-	return (1);
-}
+	char	buf;
 
-int get_map_info(char *file, t_map *map)
-{
-	int fd;
-	char buf;
-
-	fd = open(file, O_RDONLY);
-	if (fd == -1)
-		exit(1);
-	initialize_map(&(map->info));
 	while (read(fd, &buf, 1) > 0)
 	{
 		map->info.num_char++;
@@ -74,32 +55,53 @@ int get_map_info(char *file, t_map *map)
 			map->info.cells++;
 		if (buf == '\n' && map->info.columns == 0)
 			map->info.columns = map->info.cells;
-		else if (buf == '\n' || buf == '\0')
-		{
-			if (check_rectangle(map->info.cells, map->info.columns) != 0)
-			{
-				close(fd);
-				return (2);
-			}
-		}
-		else if (buf == 'C'|| buf == 'P' || buf == 'E')
-		{
-			if (set_special_info(buf, &(map->info)) != 0)
-			{
-				close(fd);
-				return (3);
-			}
-		}
+		else if (end_line(buf) == 0 && check_rectangle(map) != 0)
+			return (3);
+		else if (special_char(buf) == 0 && set_info(buf, &(map->info)) != 0)
+			return (buf);
 		else if (valid_char(buf) != 0)
-		{
-			close(fd);
 			return (4);
-		}
 	}
 	if (buf != '\n')
 		map->info.num_char++;
+	if (map->info.columns == 0)
+		map->info.columns = map->info.cells;
 	if (map->info.columns != 0)
 		map->info.lines = map->info.cells / map->info.columns;
-	close(fd);
 	return (0);
+}
+
+static int	ber_file(char *file)
+{
+	int	len;
+
+	len = ft_strlen(file);
+	if (file[len - 1] == 'r')
+	{
+		if (file[len - 2] == 'e')
+		{
+			if (file[len - 3] == 'b')
+			{
+				if (file[len - 4] == '.')
+					return (0);
+			}
+		}
+	}
+	return (1);
+}
+
+int	get_map_info(char *file, t_map *map)
+{
+	int		fd;
+	int		result;
+
+	if (ber_file(file) != 0)
+		return (2);
+	fd = open(file, O_RDONLY);
+	initialize_map(&(map->info));
+	if (fd == -1)
+		return (1);
+	result = first_read(fd, map);
+	close(fd);
+	return (result);
 }
