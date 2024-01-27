@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_info.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 19:45:48 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/20 19:55:17 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/23 20:13:26 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	first_read(int fd, t_map *map)
 	while (read(fd, &buf, 1) > 0)
 	{
 		map->info.num_char++;
-		if (buf != '\n')
+		if (buf != '\n' && valid_char(buf) == 0)
 			map->info.cells++;
 		if (buf == '\n' && map->info.columns == 0)
 			map->info.columns = map->info.cells;
@@ -64,10 +64,10 @@ static int	first_read(int fd, t_map *map)
 	}
 	if (buf != '\n')
 		map->info.num_char++;
-	if (map->info.columns == 0)
-		map->info.columns = map->info.cells;
 	if (map->info.columns != 0)
 		map->info.lines = map->info.cells / map->info.columns;
+	if (check_rectangle(map) != 0)
+		return (3);
 	return (0);
 }
 
@@ -98,9 +98,9 @@ int	get_map_info(char *file, t_map *map)
 	if (ber_file(file) != 0)
 		return (2);
 	fd = open(file, O_RDONLY);
-	initialize_map(&(map->info));
 	if (fd == -1)
 		return (1);
+	initialize_map(&(map->info));
 	result = first_read(fd, map);
 	close(fd);
 	return (result);

@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irgonzal <irgonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 19:37:11 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/20 19:55:37 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/23 20:00:23 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
-
-int	clean_map(char *file, t_map *map)
-{
-	int	i;
-
-	if (!map || !map->content)
-		return (1);
-	i = 2;
-	while (map->content[map->info.num_char - i] == '\n')
-		i++;
-	if (i == 2)
-		return (0);
-	map->info.num_char = map->info.num_char - i + 2;
-	free(map->content);
-	return (get_map_content(file, map));
-}
 
 int	get_map_content(char *file, t_map *map)
 {
@@ -35,19 +19,24 @@ int	get_map_content(char *file, t_map *map)
 
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
-		return (1);
-	chars = (*map).info.num_char;
-	(*map).content = malloc(chars * sizeof(char));
+		return (-1);
+	chars = map->info.num_char;
+	map->content = malloc(chars * sizeof(char));
 	if (!(*map).content)
-		return (1);
-	if (read(fd, (*map).content, chars - 1) != chars - 1)
+		return (-1);
+	if (read(fd, map->content, chars - 1) != chars - 1)
 	{
 		close(fd);
 		return (1);
 	}
 	close(fd);
-	clean_map(file, map);
-	(*map).content[chars - 1] = '\0';
+	chars--;
+	while (valid_char(map->content[chars]) != 0 || map->content[chars] == 10)
+	{
+		map->content[chars] = 0;
+		chars--;
+	}
+	map->info.num_char = chars;
 	return (0);
 }
 
@@ -88,6 +77,10 @@ int	get_map(char *file, t_solong *solong)
 		err = get_map_content(file, solong->map);
 		if (err == 0)
 			err = check_map(solong->map);
+		if (err > 0)
+			free(solong->map->content);
 	}
+	if (err != 0)
+		free(solong->map);
 	return (err);
 }

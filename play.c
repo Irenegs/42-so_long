@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   play.c											 :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: irgonzal <irgonzal@student.42madrid.com	+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/01/16 19:15:23 by irgonzal		  #+#	#+#			 */
-/*   Updated: 2024/01/19 19:57:16 by irgonzal		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   play.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/23 20:25:26 by irgonzal          #+#    #+#             */
+/*   Updated: 2024/01/23 20:25:28 by irgonzal         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
@@ -34,9 +34,8 @@ int	restore(t_solong *solong)
 int	destroy(t_solong *solong)
 {
 	ft_out_images(solong);
-	mlx_loop_end(solong->graphics->mlx);
 	mlx_destroy_window(solong->graphics->mlx, solong->graphics->win);
-	mlx_destroy_display(solong->graphics->mlx);
+	mlx_destroy(solong->graphics->mlx);
 	clean_solong(solong);
 	exit(0);
 }

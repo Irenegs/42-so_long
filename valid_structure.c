@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   valid_structure.c								  :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: irgonzal <irgonzal@student.42madrid.com	+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/01/16 19:38:50 by irgonzal		  #+#	#+#			 */
-/*   Updated: 2024/01/19 19:07:17 by irgonzal		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   valid_structure.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/23 20:23:18 by irgonzal          #+#    #+#             */
+/*   Updated: 2024/01/23 20:23:42 by irgonzal         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
@@ -47,7 +47,7 @@ static int	check_horizontal_borders(t_map *map)
 	{
 		if (map->content[i] != '1')
 			return (1);
-		if (map->content[map->info.num_char - i - 2] != '1')
+		if (map->content[map->info.num_char - i] != '1')
 			return (1);
 		i++;
 	}

@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   movement.c										 :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: irgonzal <irgonzal@student.42madrid.com	+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/01/11 17:24:58 by irgonzal		  #+#	#+#			 */
-/*   Updated: 2024/01/19 16:49:55 by irgonzal		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   movement.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/23 20:25:08 by irgonzal          #+#    #+#             */
+/*   Updated: 2024/01/23 20:25:10 by irgonzal         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
@@ -66,7 +66,7 @@ void	make_movement(int keycode, t_solong *solong)
 	}
 	if (solong->map->info.position != solong->map->info.exit)
 		solong->map->content[solong->map->info.position] = '0';
-	if (solong->map->info.position != solong->map->info.exit)
+	if (solong->map->info.position == solong->map->info.exit)
 		solong->map->content[solong->map->info.exit] = 'E';
 	if (solong->map->content[np] == 'C')
 		solong->map->info.collectables -= 1;
