@@ -6,7 +6,7 @@
 /*   By: irgonzal <irgonzal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 20:25:26 by irgonzal          #+#    #+#             */
-/*   Updated: 2024/01/23 20:25:28 by irgonzal         ###   ########.fr       */
+/*   Updated: 2024/01/25 17:58:54 by irgonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int	destroy(t_solong *solong)
 {
 	ft_out_images(solong);
 	mlx_destroy_window(solong->graphics->mlx, solong->graphics->win);
-	mlx_destroy(solong->graphics->mlx);
 	clean_solong(solong);
 	exit(0);
 }
